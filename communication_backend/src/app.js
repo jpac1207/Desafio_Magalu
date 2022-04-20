@@ -1,18 +1,20 @@
 require('dotenv').config({ path: 'config.env' });
 
-async function main() {
-    const port = process.env.SERVER_PORT;
-    if (port) {
-        const routesRecorder = require('./routes/routesRecorder');
-        const express = require('express');        
-        const app = express();        
+const port = process.env.SERVER_PORT;
+if (port) {
+    const routesRecorder = require('./routes/routesRecorder');
+    const express = require('express');
+    const app = express();
 
-        app.use(express.json());
-        routesRecorder(app);
+    app.use(express.json());
+    routesRecorder(app);
+
+    if (require.main == module) {
         app.listen(port);
-    } else {
-        throw new Error('Verify the config file!');
+        console.log('Our endpoint is running...');
     }
+} else {
+    throw new Error('Verify the config file!');
 }
 
-main().then(() => console.log('Our endpoint is running...'), (err) => { console.log(err); })
+module.exports = app;
