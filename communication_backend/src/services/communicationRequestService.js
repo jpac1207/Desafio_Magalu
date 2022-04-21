@@ -20,6 +20,21 @@ async function registerCommunicationSend(req, res) {
     }
 }
 
+async function checkCommunicationSend(req, res) {
+    let communicationCheck = req.body;
+    if (validateCommunicationCheck(communicationCheck)) {
+
+    }
+}
+
+function validateCommunicationCheck(communicationCheck) {
+    return (communicationCheck.communicationRequestToken && validateCommunicationRequestToken(communicationCheck.communicationRequestToken));
+}
+
+function validateCommunicationRequestToken(communicationRequestToken) {
+    return communicationRequestToken.length == communicationRequestDomain.communicationRequestTokenSize;
+}
+
 function validateCommunicationRequest(communicationRequest) {
     if (!communicationRequest.deliveryTime || !validateDateAttribute(communicationRequest.deliveryTime)) return false;
     if (!communicationRequest.receiverEmail || !validateMailString(communicationRequest.receiverEmail)) return false;
@@ -49,4 +64,4 @@ function validateDeliveryType(deliveryType) {
     return validValues.indexOf(deliveryType) != -1;
 }
 
-module.exports = { registerCommunicationSend };
+module.exports = { registerCommunicationSend, checkCommunicationSend };
