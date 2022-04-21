@@ -9,7 +9,7 @@ CommunicationRequestDal.registerCommunicationRequest = async function (communica
         let sql = 'INSERT INTO communication_request (id, delivery_time, receiver_email, message, delivery_type, status) ' +
             'VALUES (?,?,?,?,?,?)';
         await connection.query(sql, [communicationRequest.id, communicationRequest.deliveryTime,
-             communicationRequest.receiverEmail, communicationRequest.message, communicationRequest.deliveryType, status]);        
+        communicationRequest.receiverEmail, communicationRequest.message, communicationRequest.deliveryType, status]);
     }
     catch (ex) {
         console.log(ex);
@@ -19,6 +19,23 @@ CommunicationRequestDal.registerCommunicationRequest = async function (communica
         if (connection) connection.end();
     }
     return true;
+}
+
+CommunicationRequestDal.checkCommunicationRequestStatus = async function (communicationRequestToken) {
+    let connection = null;
+    let response = null;
+    try {
+        connection = await db.getConnection();
+        let sql = 'SELECT * FROM communication_request WHERE id = ?';
+        response = await connection.query(sql, [communicationRequestToken]);
+    }
+    catch (ex) {
+        console.log(ex);
+        throw ex;
+    } finally {
+        if (connection) connection.end();
+    }
+    return response;
 }
 
 module.exports = CommunicationRequestDal;
