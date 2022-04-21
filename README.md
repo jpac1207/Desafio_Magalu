@@ -69,17 +69,17 @@ MySQL
     
    **Refuse invalid delivery type**: Verifica se o endpoint 1 está respondendo com mensagem de erro para os casos onde o formato de comunicação não é válido (email: 1, sms: 2, push: 3, whatsapp: 4).
    
-    **Check if status of a new communication request equals to waiting**: Verifica se o endpoint 2 está respondendo com o status waiting para mensagens recem criadas.
+   **Check if status of a new communication request equals to waiting**: Verifica se o endpoint 2 está respondendo com o status waiting para mensagens recem criadas.
     
-    **Refuse check without token**: Verifica se o endpoint 2 está retornando erro 500 para requisições que não contenham token de verificação.
+   **Refuse check without token**: Verifica se o endpoint 2 está retornando erro 500 para requisições que não contenham token de verificação.
     
-    **Refuse check with invalid token**: Verifica se o endpoint 2 está retornando erro 500 para requisições que não contenham token válido de verificação (RFC4122).
+   **Refuse check with invalid token**: Verifica se o endpoint 2 está retornando erro 500 para requisições que não contenham token válido de verificação (RFC4122).
       
    **Check if status of a cancelled communication equals to cancelled**: Verifica se o endpoint 3 está alterando o status da solicitação de comunicação para cancelled (3).
     
-    **Refuse cancellation without token**:Verifica se o endpoint 3 está retornando erro 500 para requisições que não contenham token de verificação.
+   **Refuse cancellation without token**:Verifica se o endpoint 3 está retornando erro 500 para requisições que não contenham token de verificação.
     
-    **Refuse cancellation without token**: Verifica se o endpoint 3 está retornando erro 500 para requisições que não contenham token válido de verificação (RFC4122).
+   **Refuse cancellation without token**: Verifica se o endpoint 3 está retornando erro 500 para requisições que não contenham token válido de verificação (RFC4122).
 
 
 ## Exemplo de Chamada para os endpoints (Executados em localhost ou instância do Docker em localhost):
