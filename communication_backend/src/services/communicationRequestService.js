@@ -24,8 +24,7 @@ function validateBody(communicationRequest) {
     if (!communicationRequest.deliveryTime)
         return false;
     else {
-        let deliveryTimeAsDate = new Date(communicationRequest.deliveryTime);
-        if (!validateDateAttribute(deliveryTimeAsDate))                   
+        if (!validateDateAttribute(communicationRequest.deliveryTime))
             return false;
     }
     if (!communicationRequest.receiverEmail)
@@ -38,7 +37,9 @@ function validateBody(communicationRequest) {
 }
 
 function validateDateAttribute(dateAttribute) {
-    return (dateAttribute instanceof Date && !isNaN(dateAttribute)) && dateAttribute > new Date();
+    if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(dateAttribute)) return false;
+    var d = new Date(dateAttribute); 
+    return d.toISOString()===dateAttribute;
 }
 
 module.exports = { registerCommunicationSend };
