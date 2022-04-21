@@ -7,4 +7,4 @@ const config = {
     password: process.env.DATABASE_PASSWORD
 };
 const client = mysqlx.getClient(config);
-module.exports = client.getSession();
+module.exports = client;

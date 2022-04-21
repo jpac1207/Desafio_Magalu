@@ -1,9 +1,11 @@
 const { v4: uuidv4 } = require('uuid');
 const communicationRequestDal = require('../repository/communicationRequestDal');
+const communicationDomain = require('../domain/communicationRequestDomain');
 
 function registerCommunicationSend(req, res) {
     if (validateBody(req.body)) {
-        const uniqueCode = uuidv4();        
+        const uniqueCode = uuidv4();    
+        console.log(communicationDomain);
         res.status(200).json({ code: uniqueCode });
     }
     else{

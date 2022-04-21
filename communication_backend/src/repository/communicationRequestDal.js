@@ -5,7 +5,7 @@ const CommunicationRequestDal = function () { };
 CommunicationRequestDal.registerCommunicationRequest = async function (communicationRequest, status) {
     let connection = null;
     try {
-        connection = await db.getConnection();
+        connection = await db.getSession();
         let sql = 'INSERT INTO communication_request (id, delivery_time, receiver_email, message, delivery_type, status) ' +
             'VALUES (?,?,?,?,?,?)';
         let query = connection.sql(sql).bind([communicationRequest.id, communicationRequest.deliveryTime,
