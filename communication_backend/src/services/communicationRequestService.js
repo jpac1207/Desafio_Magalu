@@ -24,9 +24,11 @@ async function checkCommunicationSend(req, res) {
     let communicationCheck = req.body;
     if (validateCommunicationCheck(communicationCheck)) {
         try {
-            let communicationRequestData = await communicationRequestDal.checkCommunicationRequestStatus(communicationCheck.communicationRequestToken);
-            console.log(communicationRequestData);
-            res.status(200).json({ communicationRequest: communicationRequestData });
+            let communicationRequestData = await communicationRequestDal.checkCommunicationRequestStatus(communicationCheck.communicationRequestToken);            
+            if (communicationRequestData.id)
+                res.status(200).json({ communicationRequest: communicationRequestData });
+            else
+                res.status(500).json({ error: 'There is no communication request with the passed token!' });
         }
         catch (ex) {
             res.status(500).json({ error: 'Error checking communication request!' });

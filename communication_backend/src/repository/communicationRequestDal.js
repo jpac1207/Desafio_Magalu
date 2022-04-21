@@ -29,7 +29,7 @@ CommunicationRequestDal.checkCommunicationRequestStatus = async function (commun
         connection = await db.getConnection();
         let sql = 'SELECT * FROM communication_request WHERE id = ?';
         response = await connection.query(sql, [communicationRequestToken]);     
-        data = response.length > 0 ? response : {};
+        data = response.length > 0 ? response[0] : {};
     }
     catch (ex) {
         console.log(ex);
