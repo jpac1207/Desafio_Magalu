@@ -1,6 +1,6 @@
 const supertest = require('supertest');
-const { v4: uuidv4 } = require('uuid');
 const app = require('./app');
+const communicationRequestDomain = require('./domain/communicationRequestDomain');
 
 function executeRegisterCommunicationTests() {
     test('Receive Valid Token', async () => {
@@ -8,10 +8,10 @@ function executeRegisterCommunicationTests() {
             "deliveryTime": "2022-05-01T23:28:56.782Z",
             "receiverEmail": "email.teste@hotmail.com",
             "message": "No minimo 10 caracteres",
-            "deliveryType": 1
+            "deliveryType": communicationRequestDomain.communicationTypes.email
         });
         expect(response.statusCode).toEqual(200);
-        expect(response.body.communicationRequestCode.length).toEqual(36);
+        expect(response.body.communicationRequestCode.length).toEqual(communicationRequestDomain.communicationRequestTokenSize);
     });
 
     test('Refuse invalid e-mail', async () => {
@@ -19,7 +19,7 @@ function executeRegisterCommunicationTests() {
             "deliveryTime": "2022-05-01T23:28:56.782Z",
             "receiverEmail": "invalidEMail",
             "message": "No minimo 10 caracteres",
-            "deliveryType": 1
+            "deliveryType": communicationRequestDomain.communicationTypes.email
         });
         expect(response.statusCode).toEqual(500);
         expect(response.body.error).toBeDefined();
@@ -30,7 +30,7 @@ function executeRegisterCommunicationTests() {
             "deliveryTime": "2022-05-01T24:28:56.782Z",
             "receiverEmail": "email.teste@hotmail.com",
             "message": "No minimo 10 caracteres",
-            "deliveryType": 1
+            "deliveryType": communicationRequestDomain.communicationTypes.email
         });
         expect(response.statusCode).toEqual(500);
         expect(response.body.error).toBeDefined();
@@ -41,7 +41,7 @@ function executeRegisterCommunicationTests() {
             "deliveryTime": "2022-05-01T23:28:56.782Z",
             "receiverEmail": "email.teste@hotmail.com",
             "message": "-",
-            "deliveryType": 1
+            "deliveryType": communicationRequestDomain.communicationTypes.email
         });
         expect(response.statusCode).toEqual(500);
         expect(response.body.error).toBeDefined();
@@ -60,7 +60,7 @@ function executeRegisterCommunicationTests() {
     });
 }
 
-function executeCheckCommunicationTest() {
+function executeCheckCommunicationTests() {
     test('Check if status of a new communication request is equals to waiting', async () => {
         // Create communication request
         let futureDate = new Date();
@@ -69,7 +69,7 @@ function executeCheckCommunicationTest() {
             "deliveryTime": futureDate.toISOString(),
             "receiverEmail": "email.teste@hotmail.com",
             "message": "No minimo 10 caracteres",
-            "deliveryType": 1
+            "deliveryType": communicationRequestDomain.communicationTypes.sms
         });
         let confirmationToken = communicationRequestResponse.body.communicationRequestCode;
         // Check Status
@@ -78,14 +78,14 @@ function executeCheckCommunicationTest() {
         });
         expect(response.statusCode).toEqual(200);
         expect(response.body.communicationRequest).toBeDefined();
-        expect(response.body.communicationRequest.status).toEqual(1);
+        expect(response.body.communicationRequest.status).toEqual(communicationRequestDomain.communicationStatus.waiting);
     });
 
     test('Refuse check without token', async () => {       
         // Check Status
         const response = await supertest(app).post('/communicationrequest/check');
         expect(response.statusCode).toEqual(500);
-        expect(response.body.error).toBeDefined();        
+        expect(response.body.error).toBeDefined();       
     });
 
     test('Refuse check with invalid token', async () => {       
@@ -98,4 +98,4 @@ function executeCheckCommunicationTest() {
     });
 }
 executeRegisterCommunicationTests();
-executeCheckCommunicationTest();
+executeCheckCommunicationTests();
