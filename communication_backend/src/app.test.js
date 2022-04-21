@@ -64,8 +64,8 @@ function executeRegisterCommunicationTests() {
 }
 
 function executeCheckCommunicationTests() {
-    test('Check if status of a new communication request is equals to waiting', async () => {
-        // Create communication request
+    test('Check if status of a new communication request equals to waiting', async () => {
+        // Create a communication request
         let futureDate = new Date();
         futureDate.setFullYear(futureDate.getFullYear() + 1);
         const communicationRequestResponse = await supertest(app).post('/communicationrequest/register').send({
@@ -100,5 +100,51 @@ function executeCheckCommunicationTests() {
         expect(response.body.error).toBeDefined();
     });
 }
+
+function executeCancellCommunicationTests() {
+    test('Check if status of a cancelled communication equals to cancelled', async () => {
+        // Create a communication request
+        let futureDate = new Date();
+        futureDate.setFullYear(futureDate.getFullYear() + 1);
+        const communicationRequestResponse = await supertest(app).post('/communicationrequest/register').send({
+            "deliveryTime": futureDate.toISOString(),
+            "receiverEmail": "email.teste@hotmail.com",
+            "message": "No minimo 10 caracteres",
+            "deliveryType": communicationRequestDomain.communicationTypes.whatsapp
+        });
+        let confirmationToken = communicationRequestResponse.body.communicationRequestCode;
+        // Cancel communication
+        const communicationCancellationResponse = await supertest(app).post('/communicationrequest/cancel').send({
+            "communicationRequestToken": confirmationToken
+        });
+        expect(communicationCancellationResponse.statusCode).toEqual(200);
+        expect(communicationCancellationResponse.body.msg).toBeDefined();
+       
+        // Check Status
+        const response = await supertest(app).post('/communicationrequest/check').send({
+            "communicationRequestToken": confirmationToken
+        });
+        expect(response.statusCode).toEqual(200);
+        expect(response.body.communicationRequest).toBeDefined();
+        expect(response.body.communicationRequest.status).toEqual(communicationRequestDomain.communicationStatus.cancelled);
+    });
+
+    test('Refuse cancellation without token', async () => {
+        // Check Status
+        const response = await supertest(app).post('/communicationrequest/cancel');
+        expect(response.statusCode).toEqual(500);
+        expect(response.body.error).toBeDefined();
+    });
+
+    test('Refuse cancellation with invalid token', async () => {
+        // Check Status
+        const response = await supertest(app).post('/communicationrequest/cancel').send({
+            "communicationRequestToken": 'ablnmkoqnfoqfnoqqfnqfonqoqwxafdwf'
+        });
+        expect(response.statusCode).toEqual(500);
+        expect(response.body.error).toBeDefined();
+    });
+}
 executeRegisterCommunicationTests();
 executeCheckCommunicationTests();
+executeCancellCommunicationTests();
