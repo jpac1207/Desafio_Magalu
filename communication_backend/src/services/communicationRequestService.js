@@ -30,7 +30,8 @@ function validateCommunicationRequest(communicationRequest) {
 
 function validateDateAttribute(dateAttribute) {
     if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(dateAttribute)) return false;
-    var d = new Date(dateAttribute);
+    let d = new Date(dateAttribute);
+    if (!d instanceof Date || isNaN(d)) return false;
     return d.toISOString() === dateAttribute;
 }
 
@@ -44,7 +45,7 @@ function validateMessageString(messageString) {
 }
 
 function validateDeliveryType(deliveryType) {
-    let validValues = Object.keys(communicationRequestDomain.communicationTypes).map(key => communicationRequestDomain.communicationTypes[key]);  
+    let validValues = Object.keys(communicationRequestDomain.communicationTypes).map(key => communicationRequestDomain.communicationTypes[key]);
     return validValues.indexOf(deliveryType) != -1;
 }
 
