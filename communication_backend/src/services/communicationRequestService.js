@@ -24,7 +24,7 @@ async function checkCommunicationSend(req, res) {
     let communicationCheck = req.body;
     if (validateCommunicationCheck(communicationCheck)) {
         try {
-            let communicationRequestData = await communicationRequestDal.checkCommunicationRequestStatus(communicationCheck.communicationRequestToken);            
+            let communicationRequestData = await communicationRequestDal.checkCommunicationRequestStatus(communicationCheck.communicationRequestToken);
             if (communicationRequestData.id)
                 res.status(200).json({ communicationRequest: communicationRequestData });
             else
@@ -35,6 +35,24 @@ async function checkCommunicationSend(req, res) {
         }
     } else {
         res.status(500).json({ error: 'The communication check object is not valid!' });
+    }
+}
+
+async function cancelCommunicationSend(req, res) {
+    let communicationCheck = req.body;
+    if (validateCommunicationCheck(communicationCheck)) {
+        try {
+            let communicationRequestData = await communicationRequestDal.cancelCommunicationRequest(communicationCheck.communicationRequestToken);
+            if (communicationRequestData.id)
+                res.status(200).json({ communicationRequest: communicationRequestData });
+            else
+                res.status(500).json({ error: 'There is no communication request with the passed token!' });
+        }
+        catch (ex) {
+            res.status(500).json({ error: 'Error in cancelling communication request!' });
+        }
+    } else {
+        res.status(500).json({ error: 'The communication cancellation object is not valid!' });
     }
 }
 
@@ -75,4 +93,4 @@ function validateDeliveryType(deliveryType) {
     return validValues.indexOf(deliveryType) != -1;
 }
 
-module.exports = { registerCommunicationSend, checkCommunicationSend };
+module.exports = { registerCommunicationSend, checkCommunicationSend, cancelCommunicationSend };
