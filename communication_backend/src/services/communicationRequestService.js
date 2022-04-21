@@ -6,7 +6,9 @@ async function registerCommunicationSend(req, res) {
     let communicationRegister = req.body;
     if (validateBody(communicationRegister)) {
         const uniqueCode = uuidv4();
-        let registerConfirmation = await communicationRequestDal.registerCommunicationRequest(communicationRegister);
+        communicationRegister.id = uniqueCode;
+        let registerConfirmation = await communicationRequestDal.registerCommunicationRequest(communicationRegister,
+            communicationDomain.communicationStatus.waiting);
         if (registerConfirmation)
             res.status(200).json({ code: uniqueCode });
         else
