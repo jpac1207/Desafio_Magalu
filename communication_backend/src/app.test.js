@@ -3,16 +3,19 @@ const app = require('./app');
 const communicationRequestDomain = require('./domain/communicationRequestDomain');
 
 function executeRegisterCommunicationTests() {
-    test('Receive Valid Token', async () => {
-        const response = await supertest(app).post('/communicationrequest/register').send({
-            "deliveryTime": "2022-05-01T23:28:56.782Z",
-            "receiverEmail": "email.teste@hotmail.com",
-            "message": "No minimo 10 caracteres",
-            "deliveryType": communicationRequestDomain.communicationTypes.email
+    let deliveryTypes = Object.keys(communicationRequestDomain.communicationTypes);
+    for (let deliveryType of deliveryTypes) {
+        test(`Receive Valid Token using ${deliveryType} as delivery type`, async () => {
+            const response = await supertest(app).post('/communicationrequest/register').send({
+                "deliveryTime": "2022-05-01T23:28:56.782Z",
+                "receiverEmail": "email.teste@hotmail.com",
+                "message": "No minimo 10 caracteres",
+                "deliveryType": communicationRequestDomain.communicationTypes[deliveryType]
+            });
+            expect(response.statusCode).toEqual(200);
+            expect(response.body.communicationRequestCode.length).toEqual(communicationRequestDomain.communicationRequestTokenSize);
         });
-        expect(response.statusCode).toEqual(200);
-        expect(response.body.communicationRequestCode.length).toEqual(communicationRequestDomain.communicationRequestTokenSize);
-    });
+    }
 
     test('Refuse invalid e-mail', async () => {
         const response = await supertest(app).post('/communicationrequest/register').send({
@@ -81,20 +84,20 @@ function executeCheckCommunicationTests() {
         expect(response.body.communicationRequest.status).toEqual(communicationRequestDomain.communicationStatus.waiting);
     });
 
-    test('Refuse check without token', async () => {       
+    test('Refuse check without token', async () => {
         // Check Status
         const response = await supertest(app).post('/communicationrequest/check');
         expect(response.statusCode).toEqual(500);
-        expect(response.body.error).toBeDefined();       
+        expect(response.body.error).toBeDefined();
     });
 
-    test('Refuse check with invalid token', async () => {       
+    test('Refuse check with invalid token', async () => {
         // Check Status
         const response = await supertest(app).post('/communicationrequest/check').send({
             "communicationRequestToken": 'ablnmkoqnfoqfnoqqfnqfonqoqwxafdwf'
         });
         expect(response.statusCode).toEqual(500);
-        expect(response.body.error).toBeDefined();        
+        expect(response.body.error).toBeDefined();
     });
 }
 executeRegisterCommunicationTests();
