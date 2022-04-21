@@ -6,5 +6,8 @@ const config = {
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD
 };
-const client = mysqlx.getClient(config);
+const poolingConfig = {
+    pooling: { enabled: true, maxSize: 10 }
+};
+const client = mysqlx.getClient(config, poolingConfig);
 module.exports = client;

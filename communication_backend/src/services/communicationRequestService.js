@@ -2,13 +2,17 @@ const { v4: uuidv4 } = require('uuid');
 const communicationRequestDal = require('../repository/communicationRequestDal');
 const communicationDomain = require('../domain/communicationRequestDomain');
 
-function registerCommunicationSend(req, res) {
-    if (validateBody(req.body)) {
-        const uniqueCode = uuidv4();    
-        console.log(communicationDomain);
-        res.status(200).json({ code: uniqueCode });
+async function registerCommunicationSend(req, res) {
+    let communicationRegister = req.body;
+    if (validateBody(communicationRegister)) {
+        const uniqueCode = uuidv4();
+        let registerConfirmation = await communicationRequestDal.registerCommunicationRequest(communicationRegister);
+        if (registerConfirmation)
+            res.status(200).json({ code: uniqueCode });
+        else
+            res.status(500).json({ error: 'Error saving communication request!' });
     }
-    else{
+    else {
         res.status(500).json({ error: 'The communication request object is not valid!' });
     }
 }
