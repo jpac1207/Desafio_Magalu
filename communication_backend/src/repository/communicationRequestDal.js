@@ -40,4 +40,23 @@ CommunicationRequestDal.checkCommunicationRequestStatus = async function (commun
     return data;
 }
 
+CommunicationRequestDal.updateCommunicationRequestStatus = async function(communicationRequestToken, status){
+    let connection = null;
+    let affectedRows = 0;
+    try {
+        connection = await db.getConnection();
+        let sql = 'UPDATE communication_request SET status = ? WHERE id = ?';
+        let response  = await connection.query(sql, [status, communicationRequestToken]);
+        affectedRows = response.affectedRows;
+    }
+    catch (ex) {
+        console.log(ex);
+        throw ex;
+    }
+    finally {
+        if (connection) connection.end();
+    }
+    return affectedRows;
+}
+
 module.exports = CommunicationRequestDal;
