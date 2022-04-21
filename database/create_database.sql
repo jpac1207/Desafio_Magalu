@@ -19,7 +19,7 @@ USE `dbcommunication`;
 
 -- Copiando estrutura para tabela dbcommunication.communication_request
 CREATE TABLE IF NOT EXISTS `communication_request` (
-  `id` CHAR(16) NOT NULL COLLATE 'utf8mb3_general_ci',
+  `id` CHAR(36) NOT NULL COLLATE 'utf8mb3_general_ci',
   `delivery_time` datetime NOT NULL,
   `receiver_email` varchar(50) NOT NULL,
   `message` longtext NOT NULL,
