@@ -42,9 +42,10 @@ async function cancelCommunicationSend(req, res) {
     let communicationCheck = req.body;
     if (validateCommunicationCheck(communicationCheck)) {
         try {
-            let communicationRequestData = await communicationRequestDal.cancelCommunicationRequest(communicationCheck.communicationRequestToken);
-            if (communicationRequestData.id)
-                res.status(200).json({ communicationRequest: communicationRequestData });
+            let communicationRequestData = await communicationRequestDal.updateCommunicationRequestStatus(communicationCheck.communicationRequestToken,
+                communicationRequestDomain.communicationStatus.cancelled);
+            if (communicationRequestData > 0)
+                res.status(200).json({ msg: `Communication request: ${communicationCheck.communicationRequestToken} cancelled with success!` });
             else
                 res.status(500).json({ error: 'There is no communication request with the passed token!' });
         }
