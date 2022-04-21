@@ -3,11 +3,12 @@ const communicationRequestDal = require('../repository/communicationRequestDal')
 const communicationDomain = require('../domain/communicationRequestDomain');
 
 async function registerCommunicationSend(req, res) {
-    let communicationRegister = req.body;
-    if (validateBody(communicationRegister)) {
+    let communicationRequest = req.body;
+    if (validateBody(communicationRequest)) {
         const uniqueCode = uuidv4();
-        communicationRegister.id = uniqueCode;
-        let registerConfirmation = await communicationRequestDal.registerCommunicationRequest(communicationRegister,
+        communicationRequest.id = uniqueCode;
+        communicationRequest.deliveryTime = new Date(communicationRequest.deliveryTime);
+        let registerConfirmation = await communicationRequestDal.registerCommunicationRequest(communicationRequest,
             communicationDomain.communicationStatus.waiting);
         if (registerConfirmation)
             res.status(200).json({ code: uniqueCode });
@@ -22,6 +23,11 @@ async function registerCommunicationSend(req, res) {
 function validateBody(communicationRequest) {
     if (!communicationRequest.deliveryTime)
         return false;
+    else {
+        let deliveryTimeAsDate = new Date(communicationRequest.deliveryTime);
+        if (!validateDateAttribute(deliveryTimeAsDate))                   
+            return false;
+    }
     if (!communicationRequest.receiverEmail)
         return false;
     if (!communicationRequest.message)
@@ -29,6 +35,10 @@ function validateBody(communicationRequest) {
     if (!communicationRequest.deliveryType)
         return false;
     return true;
+}
+
+function validateDateAttribute(dateAttribute) {
+    return (dateAttribute instanceof Date && !isNaN(dateAttribute)) && dateAttribute > new Date();
 }
 
 module.exports = { registerCommunicationSend };
