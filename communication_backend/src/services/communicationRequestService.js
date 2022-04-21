@@ -11,7 +11,7 @@ async function registerCommunicationSend(req, res) {
         let registerConfirmation = await communicationRequestDal.registerCommunicationRequest(communicationRequest,
             communicationRequestDomain.communicationStatus.waiting);
         if (registerConfirmation)
-            res.status(200).json({ code: uniqueCode });
+            res.status(200).json({ communicationRequestCode: uniqueCode });
         else
             res.status(500).json({ error: 'Error saving communication request!' });
     }
