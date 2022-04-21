@@ -5,19 +5,18 @@ const CommunicationRequestDal = function () { };
 CommunicationRequestDal.registerCommunicationRequest = async function (communicationRequest, status) {
     let connection = null;
     try {
-        connection = await db.getSession();
+        connection = await db.getConnection();
         let sql = 'INSERT INTO communication_request (id, delivery_time, receiver_email, message, delivery_type, status) ' +
             'VALUES (?,?,?,?,?,?)';
-        let query = connection.sql(sql).bind([communicationRequest.id, communicationRequest.deliveryTime,
-        communicationRequest.receiverEmail, communicationRequest.message, communicationRequest.deliveryType, status]);
-        await query.execute();
+        await connection.query(sql, [communicationRequest.id, communicationRequest.deliveryTime,
+             communicationRequest.receiverEmail, communicationRequest.message, communicationRequest.deliveryType, status]);        
     }
     catch (ex) {
         console.log(ex);
         return false;
     }
     finally {
-        if (connection) connection.close();
+        if (connection) connection.end();
     }
     return true;
 }
