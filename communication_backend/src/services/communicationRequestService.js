@@ -3,7 +3,7 @@ const communicationRequestDal = require('../repository/communicationRequestDal')
 
 function registerCommunicationSend(req, res) {
     if (validateBody(req.body)) {
-        const uniqueCode = uuidv4();
+        const uniqueCode = uuidv4();        
         res.status(200).json({ code: uniqueCode });
     }
     else{
