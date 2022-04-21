@@ -23,7 +23,16 @@ async function registerCommunicationSend(req, res) {
 async function checkCommunicationSend(req, res) {
     let communicationCheck = req.body;
     if (validateCommunicationCheck(communicationCheck)) {
-
+        try {
+            let communicationRequestData = await communicationRequestDal.checkCommunicationRequestStatus(communicationCheck.communicationRequestToken);
+            console.log(communicationRequestData);
+            res.status(200).json({ communicationRequest: communicationRequestData });
+        }
+        catch (ex) {
+            res.status(500).json({ error: 'Error checking communication request!' });
+        }
+    } else {
+        res.status(500).json({ error: 'The communication check object is not valid!' });
     }
 }
 
