@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const communicationRequestDal = require('../repository/communicationRequestDal');
 
 function registerCommunicationSend(req, res) {
     if (validateBody(req.body)) {
